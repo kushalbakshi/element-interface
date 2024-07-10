@@ -46,7 +46,7 @@ def run_caiman(
     opts = params.CNMFParams(params_dict=parameters)
 
     c, dview, n_processes = cm.cluster.setup_cluster(
-        backend="multiprocessing", n_processes=None
+        backend="multiprocessing", n_processes=None, ignore_preexisting=True
     )
 
     try:
