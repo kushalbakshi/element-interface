@@ -169,7 +169,7 @@ class CaImAn:
 
     def extract_pw_rigid_mc(self):
         # -- piece-wise rigid motion correction --
-        nonrigid_correction, nonrigid_blocks = {}
+        nonrigid_correction, nonrigid_blocks = {}, {}
         for pln_idx, (plane, pln_cm) in enumerate(self.planes.items()):
             block_count = len(nonrigid_blocks)
             if pln_idx == 0:
