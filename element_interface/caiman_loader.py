@@ -169,7 +169,7 @@ class CaImAn:
 
     def extract_pw_rigid_mc(self):
         # -- piece-wise rigid motion correction --
-        nonrigid_correction, nonrigid_blocks = {}
+        nonrigid_correction, nonrigid_blocks = {}, {}
         for pln_idx, (plane, pln_cm) in enumerate(self.planes.items()):
             block_count = len(nonrigid_blocks)
             if pln_idx == 0:
@@ -403,8 +403,12 @@ class _CaImAn:
         self._masks = None
 
         # ---- Metainfo ----
-        self.creation_time = datetime.fromtimestamp(os.stat(self.caiman_fp.as_posix()).st_ctime)
-        self.curation_time = datetime.fromtimestamp(os.stat(self.caiman_fp.as_posix()).st_ctime)
+        self.creation_time = datetime.fromtimestamp(
+            os.stat(self.caiman_fp.as_posix()).st_ctime
+        )
+        self.curation_time = datetime.fromtimestamp(
+            os.stat(self.caiman_fp.as_posix()).st_ctime
+        )
 
     @property
     def motion_correction(self):
@@ -458,22 +462,43 @@ class _CaImAn:
                 center_z = self.plane_idx
                 zpix = np.full(len(weights), center_z)
 
-            masks.append(
-                {
-                    "mask_id": comp_contour["neuron_id"],
-                    "mask_npix": len(weights),
-                    "mask_weights": weights,
-                    "mask_center_x": center_x,
-                    "mask_center_y": center_y,
-                    "mask_center_z": center_z,
-                    "mask_xpix": xpix,
-                    "mask_ypix": ypix,
-                    "mask_zpix": zpix,
-                    "inferred_trace": self.cnmf.estimates.C[comp_idx, :],
-                    "dff": self.cnmf.estimates.F_dff[comp_idx, :],
-                    "spikes": self.cnmf.estimates.S[comp_idx, :],
-                }
-            )
+            if (
+                self.cnmf.estimates.F_dff is not None
+                and self.cnmf.estimates.F_dff is not None
+                and self.cnmf.estimates.S is not None
+            ):
+                masks.append(
+                    {
+                        "mask_id": comp_contour["neuron_id"],
+                        "mask_npix": len(weights),
+                        "mask_weights": weights,
+                        "mask_center_x": center_x,
+                        "mask_center_y": center_y,
+                        "mask_center_z": center_z,
+                        "mask_xpix": xpix,
+                        "mask_ypix": ypix,
+                        "mask_zpix": zpix,
+                        "inferred_trace": self.cnmf.estimates.C[comp_idx, :],
+                        "dff": self.cnmf.estimates.F_dff[comp_idx, :],
+                        "spikes": self.cnmf.estimates.S[comp_idx, :],
+                    }
+                )
+            elif self.cnmf.estimates.S is None:
+                masks.append(
+                    {
+                        "mask_id": comp_contour["neuron_id"],
+                        "mask_npix": len(weights),
+                        "mask_weights": weights,
+                        "mask_center_x": center_x,
+                        "mask_center_y": center_y,
+                        "mask_center_z": center_z,
+                        "mask_xpix": xpix,
+                        "mask_ypix": ypix,
+                        "mask_zpix": zpix,
+                        "inferred_trace": self.cnmf.estimates.C[comp_idx, :],
+                        "dff": self.cnmf.estimates.F_dff[comp_idx, :],
+                    }
+                )
         return masks
 
 
@@ -593,7 +618,7 @@ def _save_mc(
                         y + mc.overlaps[1] + mc.strides[1],
                     ]
                 )
-        
+
         h5g.require_dataset(
             "x_shifts_els",
             shape=np.shape(mc.x_shifts_els),
@@ -632,12 +657,12 @@ def _save_mc(
             data=mc.shifts_rig,
             dtype=mc.shifts_rig[0][0].dtype,
         )
-        
+
         # Not needed for global single rigid shift - there is no grid!!!
         # h5g.require_dataset(
         #    "coord_shifts_rig", shape=np.shape(grid), data=grid, dtype=type(grid[0][0])
         # )
-        
+
         reference_image = (
             np.tile(mc.total_template_rig, (1, 1, dims[-1]))
             if is3D

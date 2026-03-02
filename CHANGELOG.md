@@ -3,6 +3,16 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.8.0] - 2026-03-02
+
++ Fix - `caiman_loader.py` tuple unpacking bug in `extract_pw_rigid_mc` where
+  `nonrigid_correction` and `nonrigid_blocks` were not initialized as separate dicts
++ Fix - `caiman_loader.py` handle missing spike data (`estimates.S is None`) in mask
+  extraction when spike deconvolution is not run
++ Add - `extract_loader.py` support for reconstructed ndsparse format in v7.3 MAT files
+  with sparse spatial weights
++ Update - `extract_loader.py` handle both sparse and dense arrays in `load_results`
+
 ## [0.7.1] - 2025-08-05
 
 + Feature - Explicit `n_processes` arg in `run_caiman` to specify number of cores
@@ -98,6 +108,8 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 + Add - Readers for: `ScanImage`, `Suite2p`, `CaImAn`.
 
 
+[0.8.0]: https://github.com/datajoint/element-interface/releases/tag/0.8.0
+[0.7.1]: https://github.com/datajoint/element-interface/releases/tag/0.7.1
 [0.7.0]: https://github.com/datajoint/element-interface/releases/tag/0.7.0
 [0.6.0]: https://github.com/datajoint/element-interface/releases/tag/0.6.0
 [0.5.4]: https://github.com/datajoint/element-interface/releases/tag/0.5.4
