@@ -473,15 +473,21 @@ class _CaImAn:
                     "mask_xpix": xpix,
                     "mask_ypix": ypix,
                     "mask_zpix": zpix,
-                    "inferred_trace": self.cnmf.estimates.C[comp_idx, :]
-                    if self.cnmf.estimates.C is not None
-                    else None,
-                    "dff": self.cnmf.estimates.F_dff[comp_idx, :]
-                    if self.cnmf.estimates.F_dff is not None
-                    else None,
-                    "spikes": self.cnmf.estimates.S[comp_idx, :]
-                    if self.cnmf.estimates.S is not None
-                    else None,
+                    "inferred_trace": (
+                        self.cnmf.estimates.C[comp_idx, :]
+                        if self.cnmf.estimates.C is not None
+                        else None
+                    ),
+                    "dff": (
+                        self.cnmf.estimates.F_dff[comp_idx, :]
+                        if self.cnmf.estimates.F_dff is not None
+                        else None
+                    ),
+                    "spikes": (
+                        self.cnmf.estimates.S[comp_idx, :]
+                        if self.cnmf.estimates.S is not None
+                        else None
+                    ),
                 }
             )
         return masks
